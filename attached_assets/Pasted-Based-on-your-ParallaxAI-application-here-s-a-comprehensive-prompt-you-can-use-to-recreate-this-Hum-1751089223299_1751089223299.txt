@@ -1,0 +1,109 @@
+Based on your ParallaxAI application, here's a comprehensive prompt you can use to recreate this Human-AI Co-Governance Platform with all its features:
+
+Complete ParallaxAI Application Prompt
+Create a comprehensive Human-AI Co-Governance Platform called "ParallaxAI" with the following specifications:
+
+Core Architecture
+Backend: FastAPI with Python 3.11, async/await support
+Frontend: Streamlit with custom CSS styling and Plotly visualizations
+Data Storage: In-memory storage with Pydantic models
+API: RESTful endpoints with CORS middleware
+Deployment: Concurrent FastAPI (port 8000) and Streamlit (port 8501) servers
+Complete Feature Set
+1. Dashboard Page (📊 Dashboard)
+Real-time metrics: Total Decisions, AI Accuracy, Override Rate, Bias Incidents
+Decisions table with columns: Decision ID, Status, AI Votes, Human Votes, Bias Score, Actions
+Status indicators with color coding (Approved=Green, Rejected=Red, Under Review=Yellow)
+Bias score visualization with risk levels (Low/Medium/High)
+Clickable "View" buttons for detailed decision inspection
+2. Multi-Agent Voting Interface (🗳️ Multi-Agent Voting)
+Current decision display with application details and metadata
+Real-time voting progress bar showing completion percentage
+Agent grid showing each AI and human agent with:
+Agent name, type (AI/Human), vote decision (Accept/Reject)
+Confidence percentage, justification text
+Visual status indicators (pending/completed votes)
+3. Influence Graph Viewer (🕸️ Influence Graph)
+Interactive scatter plot visualization using Plotly
+X-axis: Influence Weight, Y-axis: Average Confidence
+Bubble size represents vote count, color represents agent type
+Network metrics: Total Agents, AI Agents, Human Agents, High Influence count
+Additional metrics: Consensus Rate, Override Events
+4. Bias & Fairness Scanner (🛡️ Bias Scanner)
+Fairness Metrics Section:
+Demographic Parity, Equal Opportunity, Equalized Odds
+Progress bars with color-coded status (Green/Yellow/Red)
+Status messages for each metric
+"Trigger Bias Review" action button
+Bias Detection Heatmap:
+Bar chart showing bias scores by category (Age, Gender, Race, Location)
+Color gradient from green (low bias) to red (high bias)
+Recent Alerts Panel: Warning notifications for detected bias incidents
+Summary Metrics: Overall Fairness %, Active Alerts count, Total Reviews
+5. Governance Console (⚙️ Governance Console)
+Rule Editor Form:
+Input fields: Rule Name, Description, Context
+YAML rule definition text area with syntax highlighting
+Save functionality with API integration
+Active Rules List:
+Toggle switches for enabling/disabling rules
+Rule details display with context information
+Real-time rule status updates
+6. Audit & Compliance Log (📋 Audit Log)
+Complete audit trail table with columns:
+Decision ID with timestamp
+Agent Actions (AI votes, Human votes)
+Rules Applied list
+Compliance Status (Compliant/Under Review/Non-compliant)
+Audit Hash for integrity verification
+Export PDF Report functionality
+Chronological sorting with detailed decision history
+7. Notifications System (🔔 Notifications)
+Notification types: Bias Alert, Human Override, Decision Approved, Rule Violation
+Visual indicators: Icons, "New" badges, read/unread status
+Interactive "Mark as Read" functionality
+Timestamp display with proper formatting
+Real-time notification updates
+Data Models (Pydantic)
+Core Entities:
+Users: Admin, Human Reviewers, Compliance Officers with roles
+Decisions: ID, Context, Status, Bias Score, Metadata, Timestamps
+Agents: AI Models (GPT-4, Claude, BERT) and Human Reviewers
+Votes: Agent ID, Decision ID, Vote (Accept/Reject), Confidence, Justification
+Governance Rules: YAML-based policy definitions with activation status
+Audit Logs: Complete decision trail with cryptographic hashes
+Notifications: Type-specific alerts with read status
+API Endpoints Structure
+/api/decisions - Full CRUD for decision management
+/api/agents - Agent information and management
+/api/votes - Voting data with filtering by decision
+/api/governance-rules - Policy management with activation controls
+/api/audit-logs - Compliance tracking and history
+/api/notifications - Alert system with read/unread filtering
+/api/stats - Dashboard metrics aggregation
+Sample Data Categories
+Decision Contexts: Hiring, Lending, Risk Assessment, Healthcare, Legal
+AI Agents: GPT-4, Claude-3, BERT, Custom Models
+Human Reviewers: Senior analysts, compliance officers, domain experts
+Governance Rules: High-value thresholds, bias detection triggers, override requirements
+UI/UX Requirements
+Responsive Design: Multi-column layouts with Streamlit columns
+Color Coding: Status-based styling (Green/Yellow/Red system)
+Interactive Elements: Clickable buttons, toggle switches, progress bars
+Real-time Updates: Automatic data refresh and live status updates
+Professional Styling: Custom CSS with card layouts and shadows
+Navigation: Sidebar with page selection and connection status
+Technical Specifications
+Concurrent Servers: Startup script managing both FastAPI and Streamlit
+Error Handling: Comprehensive try-catch with user-friendly messages
+Data Validation: Pydantic models with type checking
+Session Management: FastAPI built-in session handling
+CORS Configuration: Allow all origins for development
+Performance: Async/await patterns for optimal responsiveness
+Startup Configuration
+Main Script: start_python_app.py launching both servers concurrently
+Port Configuration: FastAPI on 8000, Streamlit on 8501
+Auto-reload: Development mode with hot reloading
+Health Checks: API connectivity status in sidebar
+Graceful Shutdown: Signal handling for clean termination
+This prompt provides the complete specification for recreating your ParallaxAI platform with all features, data models, API endpoints, and technical requirements included.
