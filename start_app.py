@@ -140,7 +140,7 @@ class ParallaxAILauncher:
                 config_content = """[server]
 headless = true
 address = "0.0.0.0"
-port = 5000
+port = 8501
 
 [theme]
 primaryColor = "#1f77b4"
