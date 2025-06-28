@@ -8,11 +8,11 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any
 import uvicorn
 
-from models import *
-from websocket_manager import WebSocketManager
-from ml_bias_detector import MLBiasDetector
-from ai_integration import AIIntegration
-from data_store import DataStore
+from backend.models import *
+from backend.websocket_manager import WebSocketManager
+from backend.ml_bias_detector import MLBiasDetector
+from backend.ai_integration import AIIntegration
+from backend.data_store import DataStore
 
 app = FastAPI(title="ParallaxAI API", version="1.0.0")
 

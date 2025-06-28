@@ -18,13 +18,21 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "ParallaxAI Server"
+args = "ParallaxAI"
 
 [[workflows.workflow]]
-name = "ParallaxAI Server"
+name = "ParallaxAI"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python start_app.py"
+args = "streamlit run main.py --server.port 5000 --server.address 0.0.0.0 --server.headless true"
 waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
+
+[[ports]]
+localPort = 8000
+externalPort = 80

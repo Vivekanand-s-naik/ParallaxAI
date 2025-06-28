@@ -10,16 +10,21 @@ def show_dashboard():
     st.title("📊 ParallaxAI Dashboard")
     st.markdown("Real-time Human-AI Co-Governance Platform Overview")
     
-    # Get real-time stats
+    # Get backend components from session state
+    if 'backend' not in st.session_state:
+        from main import init_backend_components
+        st.session_state.backend = init_backend_components()
+    
+    backend = st.session_state.backend
+    if backend['status'] != 'connected':
+        st.error("Backend components not available")
+        return
+    
+    # Get real-time stats from local data store
     try:
-        response = requests.get("http://localhost:8000/api/stats", timeout=5)
-        if response.status_code == 200:
-            stats = response.json()
-        else:
-            st.error("Failed to fetch dashboard statistics")
-            return
-    except requests.exceptions.RequestException as e:
-        st.error(f"Unable to connect to API: {e}")
+        stats = backend['data_store'].get_stats()
+    except Exception as e:
+        st.error(f"Failed to fetch dashboard statistics: {e}")
         return
     
     # Top-level metrics

@@ -76,13 +76,35 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Check API connection
-def check_api_connection():
+# Initialize backend components within Streamlit
+@st.cache_resource
+def init_backend_components():
+    """Initialize backend components for the Streamlit app"""
     try:
-        response = requests.get("http://localhost:8000/health", timeout=2)
-        return response.status_code == 200
-    except:
-        return False
+        from backend.data_store import DataStore
+        from backend.ml_bias_detector import MLBiasDetector
+        from backend.ai_integration import AIIntegration
+        
+        data_store = DataStore()
+        data_store.initialize_sample_data()
+        
+        ml_bias_detector = MLBiasDetector()
+        ai_integration = AIIntegration()
+        
+        return {
+            'data_store': data_store,
+            'ml_bias_detector': ml_bias_detector,
+            'ai_integration': ai_integration,
+            'status': 'connected'
+        }
+    except Exception as e:
+        st.error(f"Failed to initialize backend components: {e}")
+        return {'status': 'disconnected', 'error': str(e)}
+
+# Check API connection (now using embedded backend)
+def check_api_connection():
+    backend = init_backend_components()
+    return backend['status'] == 'connected'
 
 # Sidebar navigation
 st.sidebar.title("🤖 ParallaxAI")

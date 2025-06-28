@@ -7,7 +7,7 @@ import openai
 import anthropic
 from anthropic import Anthropic
 
-from models import Decision, Vote, Agent
+from backend.models import Decision, Vote, Agent
 
 class AIIntegration:
     def __init__(self):

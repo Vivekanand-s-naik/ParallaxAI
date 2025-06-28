@@ -24,17 +24,26 @@ class ParallaxAILauncher:
         
     def check_dependencies(self):
         """Check if required dependencies are available"""
-        required_packages = [
-            'fastapi', 'uvicorn', 'streamlit', 'plotly', 'pandas', 
-            'requests', 'pydantic', 'scikit-learn', 'openai', 'anthropic'
-        ]
+        # Map package names to their import names
+        required_packages = {
+            'fastapi': 'fastapi',
+            'uvicorn': 'uvicorn', 
+            'streamlit': 'streamlit',
+            'plotly': 'plotly',
+            'pandas': 'pandas',
+            'requests': 'requests',
+            'pydantic': 'pydantic',
+            'scikit-learn': 'sklearn',  # scikit-learn imports as sklearn
+            'openai': 'openai',
+            'anthropic': 'anthropic'
+        }
         
         missing_packages = []
-        for package in required_packages:
+        for package_name, import_name in required_packages.items():
             try:
-                __import__(package)
+                __import__(import_name)
             except ImportError:
-                missing_packages.append(package)
+                missing_packages.append(package_name)
         
         if missing_packages:
             print(f"❌ Missing required packages: {', '.join(missing_packages)}")

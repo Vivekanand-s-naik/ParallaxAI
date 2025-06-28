@@ -10,7 +10,7 @@ from typing import Dict, List, Tuple, Any
 from datetime import datetime, timedelta
 import joblib
 
-from models import Decision, Vote, Agent
+from backend.models import Decision, Vote, Agent
 
 class MLBiasDetector:
     def __init__(self):
