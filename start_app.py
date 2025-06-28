@@ -154,7 +154,7 @@ textColor = "#262730"
             # Start Streamlit process
             cmd = [
                 sys.executable, "-m", "streamlit", "run", "main.py",
-                "--server.port", "5000",
+                "--server.port", "8501",
                 "--server.address", "0.0.0.0",
                 "--server.headless", "true"
             ]
@@ -283,7 +283,7 @@ textColor = "#262730"
             
             print("=" * 60)
             print("✅ ParallaxAI is now running!")
-            print("📊 Dashboard: http://localhost:5000")
+            print("📊 Dashboard: http://localhost:8501")
             print("🔧 API: http://localhost:8000")
             print("📚 API Docs: http://localhost:8000/docs")
             print("🔗 WebSocket: ws://localhost:8000/ws")
