@@ -2,27 +2,21 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-import requests
 from datetime import datetime, timedelta
 import time
+import frontend.api_client as api
 
 def show_dashboard():
     st.title("📊 ParallaxAI Dashboard")
     st.markdown("Real-time Human-AI Co-Governance Platform Overview")
     
-    # Get backend components from session state
-    if 'backend' not in st.session_state:
-        from main import init_backend_components
-        st.session_state.backend = init_backend_components()
-    
-    backend = st.session_state.backend
-    if backend['status'] != 'connected':
-        st.error("Backend components not available")
-        return
-    
-    # Get real-time stats from local data store
+    # Get stats from backend API
     try:
-        stats = backend['data_store'].get_stats()
+        stats_response = api.get("/api/stats")
+        if stats_response.status_code != 200:
+            st.error("Failed to fetch dashboard statistics")
+            return
+        stats = stats_response.json()
     except Exception as e:
         st.error(f"Failed to fetch dashboard statistics: {e}")
         return
@@ -72,7 +66,7 @@ def show_dashboard():
         
         # Get recent decisions
         try:
-            decisions_response = requests.get("http://localhost:8000/api/decisions", timeout=5)
+            decisions_response = api.get("/api/decisions", timeout=5)
             if decisions_response.status_code == 200:
                 decisions = decisions_response.json()
                 
@@ -148,7 +142,7 @@ def show_dashboard():
                 else:
                     st.info("No decisions found")
                     
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             st.error(f"Failed to fetch decisions: {e}")
     
     with col2:
@@ -177,7 +171,7 @@ def show_dashboard():
         st.subheader("🚨 Recent Alerts")
         
         try:
-            notifications_response = requests.get("http://localhost:8000/api/notifications", timeout=5)
+            notifications_response = api.get("/api/notifications", timeout=5)
             if notifications_response.status_code == 200:
                 notifications = notifications_response.json()
                 recent_alerts = [n for n in notifications if not n['is_read']][:3]
@@ -196,7 +190,7 @@ def show_dashboard():
                 else:
                     st.success("No active alerts")
                     
-        except requests.exceptions.RequestException:
+        except Exception:
             st.error("Failed to fetch alerts")
     
     st.markdown("---")

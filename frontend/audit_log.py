@@ -1,8 +1,8 @@
 import streamlit as st
-import requests
 import pandas as pd
 from datetime import datetime, timedelta
 import json
+import frontend.api_client as api
 
 def show_audit_log():
     st.title("📋 Audit & Compliance Log")
@@ -10,8 +10,8 @@ def show_audit_log():
     
     # Fetch audit logs and related data
     try:
-        audit_response = requests.get("http://localhost:8000/api/audit-logs", timeout=5)
-        decisions_response = requests.get("http://localhost:8000/api/decisions", timeout=5)
+        audit_response = api.get("/api/audit-logs", timeout=5)
+        decisions_response = api.get("/api/decisions", timeout=5)
         
         if audit_response.status_code != 200:
             st.error("Failed to fetch audit logs")
@@ -20,7 +20,7 @@ def show_audit_log():
         audit_logs = audit_response.json()
         decisions = decisions_response.json() if decisions_response.status_code == 200 else []
         
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         st.error(f"Unable to connect to API: {e}")
         return
     

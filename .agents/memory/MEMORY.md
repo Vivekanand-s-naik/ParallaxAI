@@ -1,0 +1,2 @@
+- [ParallaxAI auth system](parallaxai-auth.md) — HMAC-SHA256 token auth via SESSION_SECRET; login endpoint at /api/auth/login; frontend auth gate in frontend/auth.py
+- [ParallaxAI port config](parallaxai-ports.md) — Streamlit must run on port 5000 (not 8501); FastAPI on 8000; fixing port was the root cause of all WebSocket errors

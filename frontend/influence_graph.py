@@ -1,10 +1,10 @@
 import streamlit as st
-import requests
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import frontend.api_client as api
 
 def show_influence_graph():
     st.title("🕸️ Influence Graph Viewer")
@@ -12,9 +12,9 @@ def show_influence_graph():
     
     # Fetch agents and votes data
     try:
-        agents_response = requests.get("http://localhost:8000/api/agents", timeout=5)
-        votes_response = requests.get("http://localhost:8000/api/votes", timeout=5)
-        stats_response = requests.get("http://localhost:8000/api/stats", timeout=5)
+        agents_response = api.get("/api/agents", timeout=5)
+        votes_response = api.get("/api/votes", timeout=5)
+        stats_response = api.get("/api/stats", timeout=5)
         
         if agents_response.status_code != 200:
             st.error("Failed to fetch agents data")
@@ -24,7 +24,7 @@ def show_influence_graph():
         votes = votes_response.json() if votes_response.status_code == 200 else []
         stats = stats_response.json() if stats_response.status_code == 200 else {}
         
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         st.error(f"Unable to connect to API: {e}")
         return
     

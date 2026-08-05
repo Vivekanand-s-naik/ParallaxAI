@@ -1,32 +1,27 @@
 import streamlit as st
-import asyncio
-import json
 import time
 from datetime import datetime
-import plotly.express as px
-import plotly.graph_objects as go
-import pandas as pd
-import requests
-from frontend.websocket_client import WebSocketClient
-from frontend import dashboard, voting, influence_graph, bias_scanner, governance, audit_log, notifications
 
-# Initialize WebSocket client
-if 'ws_client' not in st.session_state:
-    st.session_state.ws_client = WebSocketClient()
-
-# Initialize connection status
-if 'api_connected' not in st.session_state:
-    st.session_state.api_connected = False
-
-# Page configuration
+# Page configuration — must be the very first Streamlit call
 st.set_page_config(
     page_title="ParallaxAI - Human-AI Co-Governance Platform",
     page_icon="🤖",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
 )
 
-# Custom CSS for professional styling
+# Auth gate — import before anything that renders UI
+from frontend.auth import is_authenticated, show_login_page, render_user_info, get_auth_headers, is_admin
+
+if not is_authenticated():
+    show_login_page()
+    st.stop()
+
+# --- Now we know the user is authenticated ---
+
+from frontend import dashboard, voting, influence_graph, bias_scanner, governance, audit_log, notifications
+
+# Custom CSS
 st.markdown("""
 <style>
 .metric-card {
@@ -36,19 +31,9 @@ st.markdown("""
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin: 0.5rem 0;
 }
-
-.status-indicator {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 8px;
-}
-
 .status-approved { background-color: #28a745; }
 .status-rejected { background-color: #dc3545; }
-.status-review { background-color: #ffc107; }
-
+.status-review   { background-color: #ffc107; }
 .notification-badge {
     background-color: #dc3545;
     color: white;
@@ -57,7 +42,6 @@ st.markdown("""
     font-size: 12px;
     margin-left: 5px;
 }
-
 .agent-card {
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -65,7 +49,6 @@ st.markdown("""
     margin: 5px;
     background: #f8f9fa;
 }
-
 .bias-alert {
     background-color: #fff3cd;
     border: 1px solid #ffeaa7;
@@ -76,55 +59,68 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize backend components within Streamlit
+
+# ──────────────────────────────────────────
+# Backend init (embedded)
+# ──────────────────────────────────────────
+
 @st.cache_resource
 def init_backend_components():
-    """Initialize backend components for the Streamlit app"""
     try:
         from backend.data_store import DataStore
         from backend.ml_bias_detector import MLBiasDetector
         from backend.ai_integration import AIIntegration
-        
+
         data_store = DataStore()
         data_store.initialize_sample_data()
-        
         ml_bias_detector = MLBiasDetector()
         ai_integration = AIIntegration()
-        
+
         return {
             'data_store': data_store,
             'ml_bias_detector': ml_bias_detector,
             'ai_integration': ai_integration,
-            'status': 'connected'
+            'status': 'connected',
         }
     except Exception as e:
-        st.error(f"Failed to initialize backend components: {e}")
         return {'status': 'disconnected', 'error': str(e)}
 
-# Check API connection (now using embedded backend)
-def check_api_connection():
-    backend = init_backend_components()
-    return backend['status'] == 'connected'
 
-# Sidebar navigation
+def check_api_connection() -> bool:
+    import requests
+    try:
+        r = requests.get("http://localhost:8000/health", timeout=3)
+        return r.status_code == 200
+    except Exception:
+        return False
+
+
+# ──────────────────────────────────────────
+# Sidebar
+# ──────────────────────────────────────────
+
 st.sidebar.title("🤖 ParallaxAI")
 st.sidebar.markdown("---")
 
-# Connection status
-api_status = check_api_connection()
-status_color = "🟢" if api_status else "🔴"
-status_text = "Connected" if api_status else "Disconnected"
-st.sidebar.markdown(f"**API Status:** {status_color} {status_text}")
+# User info + logout
+render_user_info()
+st.sidebar.markdown("---")
+
+# API status
+api_ok = check_api_connection()
+st.sidebar.markdown(
+    f"**API:** {'🟢 Online' if api_ok else '🔴 Offline'}"
+)
 
 # Navigation
 pages = {
-    "📊 Dashboard": "dashboard",
-    "🗳️ Multi-Agent Voting": "voting", 
-    "🕸️ Influence Graph": "influence_graph",
-    "🛡️ Bias Scanner": "bias_scanner",
+    "📊 Dashboard":          "dashboard",
+    "🗳️ Multi-Agent Voting": "voting",
+    "🕸️ Influence Graph":   "influence_graph",
+    "🛡️ Bias Scanner":      "bias_scanner",
     "⚙️ Governance Console": "governance",
-    "📋 Audit Log": "audit_log",
-    "🔔 Notifications": "notifications"
+    "📋 Audit Log":          "audit_log",
+    "🔔 Notifications":      "notifications",
 }
 
 selected_page = st.sidebar.selectbox("Navigate to:", list(pages.keys()))
@@ -132,37 +128,34 @@ page_key = pages[selected_page]
 
 st.sidebar.markdown("---")
 
-# Real-time updates toggle
-real_time_updates = st.sidebar.checkbox("Real-time Updates", value=True)
+# Real-time refresh toggle
+real_time = st.sidebar.checkbox("Real-time Updates", value=True)
 
-if real_time_updates:
+if real_time:
     st.sidebar.success("🔄 Live updates enabled")
-else:
-    st.sidebar.info("⏸️ Live updates paused")
-
-# Auto-refresh interval
-if real_time_updates:
-    refresh_interval = st.sidebar.slider("Refresh Interval (seconds)", 1, 10, 3)
-    
-    # Auto-refresh mechanism
+    refresh_interval = st.sidebar.slider("Refresh (seconds)", 5, 30, 10)
     if 'last_refresh' not in st.session_state:
         st.session_state.last_refresh = time.time()
-    
     if time.time() - st.session_state.last_refresh > refresh_interval:
         st.session_state.last_refresh = time.time()
         st.rerun()
+else:
+    st.sidebar.info("⏸️ Live updates paused")
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("**System Info**")
-st.sidebar.text(f"Last Updated: {datetime.now().strftime('%H:%M:%S')}")
+st.sidebar.text(f"Updated: {datetime.now().strftime('%H:%M:%S')}")
 
+# ──────────────────────────────────────────
 # Main content area
-if not api_status:
-    st.error("⚠️ Backend API is not available. Please ensure the FastAPI server is running on port 8000.")
-    st.info("To start the backend, run: `python start_app.py`")
+# ──────────────────────────────────────────
+
+if not api_ok:
+    st.error("⚠️ Backend API is not responding. Please wait or restart the application.")
+    st.info("The FastAPI backend should be running on port 8000.")
     st.stop()
 
-# Route to appropriate page
+# Route to the selected page
 if page_key == "dashboard":
     dashboard.show_dashboard()
 elif page_key == "voting":
@@ -177,9 +170,3 @@ elif page_key == "audit_log":
     audit_log.show_audit_log()
 elif page_key == "notifications":
     notifications.show_notifications()
-
-# WebSocket status in footer
-if st.session_state.ws_client.connected:
-    st.sidebar.success("🔗 WebSocket Connected")
-else:
-    st.sidebar.warning("🔗 WebSocket Disconnected")

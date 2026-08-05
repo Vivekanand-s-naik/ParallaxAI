@@ -1,7 +1,7 @@
 import streamlit as st
-import requests
 from datetime import datetime, timedelta
 import json
+import frontend.api_client as api
 
 def show_notifications():
     st.title("🔔 Notifications Center")
@@ -9,14 +9,14 @@ def show_notifications():
     
     # Fetch notifications
     try:
-        notifications_response = requests.get("http://localhost:8000/api/notifications", timeout=5)
+        notifications_response = api.get("/api/notifications", timeout=5)
         if notifications_response.status_code != 200:
             st.error("Failed to fetch notifications")
             return
         
         notifications = notifications_response.json()
         
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         st.error(f"Unable to connect to API: {e}")
         return
     
@@ -116,7 +116,7 @@ def show_notifications():
             for notification in filtered_notifications:
                 if not notification['is_read']:
                     try:
-                        requests.put(f"http://localhost:8000/api/notifications/{notification['id']}/read", timeout=5)
+                        api.put(f"/api/notifications/{notification['id']}/read")
                     except:
                         pass
             st.success("All notifications marked as read!")
@@ -227,9 +227,8 @@ def show_notifications():
                     if not is_read:
                         if st.button("✅ Mark Read", key=f"read_{notification['id']}", use_container_width=True):
                             try:
-                                read_response = requests.put(
-                                    f"http://localhost:8000/api/notifications/{notification['id']}/read",
-                                    timeout=5
+                                read_response = api.put(
+                                    f"/api/notifications/{notification['id']}/read"
                                 )
                                 if read_response.status_code == 200:
                                     st.success("Marked as read!")
@@ -442,10 +441,9 @@ def show_notifications():
                         "priority": test_priority
                     }
                     
-                    test_response = requests.post(
-                        "http://localhost:8000/api/notifications",
-                        json=test_notification_data,
-                        timeout=5
+                    test_response = api.post(
+                        "/api/notifications",
+                        json=test_notification_data
                     )
                     
                     if test_response.status_code == 200:

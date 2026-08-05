@@ -1,8 +1,8 @@
 import streamlit as st
-import requests
 import yaml
 import json
 from datetime import datetime
+import frontend.api_client as api
 
 def show_governance():
     st.title("⚙️ Governance Console")
@@ -10,14 +10,14 @@ def show_governance():
     
     # Fetch governance rules
     try:
-        rules_response = requests.get("http://localhost:8000/api/governance-rules", timeout=5)
+        rules_response = api.get("/api/governance-rules", timeout=5)
         if rules_response.status_code != 200:
             st.error("Failed to fetch governance rules")
             return
         
         rules = rules_response.json()
         
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         st.error(f"Unable to connect to API: {e}")
         return
     
@@ -137,10 +137,9 @@ metadata:
                         }
                         
                         # Submit to API
-                        create_response = requests.post(
-                            "http://localhost:8000/api/governance-rules",
-                            json=rule_data,
-                            timeout=5
+                        create_response = api.post(
+                            "/api/governance-rules",
+                            json=rule_data
                         )
                         
                         if create_response.status_code == 200:
@@ -200,10 +199,9 @@ metadata:
                         
                         if new_status != current_status:
                             try:
-                                update_response = requests.put(
-                                    f"http://localhost:8000/api/governance-rules/{rule['id']}",
-                                    json={"is_active": new_status},
-                                    timeout=5
+                                update_response = api.put(
+                                    f"/api/governance-rules/{rule['id']}",
+                                    json={"is_active": new_status}
                                 )
                                 
                                 if update_response.status_code == 200:
@@ -267,11 +265,10 @@ metadata:
                                         "priority": edit_priority
                                     }
                                     
-                                    update_response = requests.put(
-                                        f"http://localhost:8000/api/governance-rules/{rule['id']}",
-                                        json=update_data,
-                                        timeout=5
-                                    )
+                                    update_response = api.put(
+                                    f"/api/governance-rules/{rule['id']}",
+                                    json=update_data
+                                )
                                     
                                     if update_response.status_code == 200:
                                         st.success("Rule updated successfully!")

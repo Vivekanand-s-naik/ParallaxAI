@@ -1,10 +1,10 @@
 import streamlit as st
-import requests
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime
 import json
+import frontend.api_client as api
 
 def show_bias_scanner():
     st.title("🛡️ Bias & Fairness Scanner")
@@ -12,8 +12,8 @@ def show_bias_scanner():
     
     # Fetch data for bias analysis
     try:
-        decisions_response = requests.get("http://localhost:8000/api/decisions", timeout=5)
-        notifications_response = requests.get("http://localhost:8000/api/notifications", timeout=5)
+        decisions_response = api.get("/api/decisions", timeout=5)
+        notifications_response = api.get("/api/notifications", timeout=5)
         
         if decisions_response.status_code != 200:
             st.error("Failed to fetch decisions data")
@@ -22,7 +22,7 @@ def show_bias_scanner():
         decisions = decisions_response.json()
         notifications = notifications_response.json() if notifications_response.status_code == 200 else []
         
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         st.error(f"Unable to connect to API: {e}")
         return
     
@@ -133,7 +133,7 @@ def show_bias_scanner():
         # Trigger bias review button
         if st.button("🚨 Trigger Bias Review", type="primary", use_container_width=True):
             try:
-                review_response = requests.post("http://localhost:8000/api/bias/trigger-review", timeout=5)
+                review_response = api.post("/api/bias/trigger-review", timeout=5)
                 if review_response.status_code == 200:
                     st.success("Bias review triggered successfully!")
                     st.rerun()
@@ -376,10 +376,9 @@ def show_bias_scanner():
                     # AI Analysis button
                     if st.button("🤖 Run AI Bias Analysis", key="ai_analysis"):
                         try:
-                            analysis_response = requests.post(
-                                "http://localhost:8000/api/ai/detect-bias",
-                                json={"decision_id": selected_decision['id']},
-                                timeout=10
+                            analysis_response = api.post(
+                                "/api/ai/detect-bias",
+                                json={"decision_id": selected_decision['id']}
                             )
                             
                             if analysis_response.status_code == 200:

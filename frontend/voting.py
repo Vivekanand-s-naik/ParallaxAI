@@ -1,10 +1,10 @@
 import streamlit as st
-import requests
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime
 import json
+import frontend.api_client as api
 
 def show_voting():
     st.title("🗳️ Multi-Agent Voting Interface")
@@ -12,7 +12,7 @@ def show_voting():
     
     # Get current decisions for voting
     try:
-        decisions_response = requests.get("http://localhost:8000/api/decisions", timeout=5)
+        decisions_response = api.get("/api/decisions", timeout=5)
         if decisions_response.status_code != 200:
             st.error("Failed to fetch decisions")
             return
@@ -20,7 +20,7 @@ def show_voting():
         decisions = decisions_response.json()
         pending_decisions = [d for d in decisions if d['status'] in ['pending', 'under_review']]
         
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         st.error(f"Unable to connect to API: {e}")
         return
     
@@ -80,7 +80,7 @@ def show_voting():
         
         # Get votes for this decision
         try:
-            votes_response = requests.get(f"http://localhost:8000/api/votes?decision_id={selected_decision['id']}", timeout=5)
+            votes_response = api.get(f"/api/votes", params={"decision_id": selected_decision['id']})
             if votes_response.status_code == 200:
                 votes = votes_response.json()
             else:
@@ -90,7 +90,7 @@ def show_voting():
         
         # Get all agents
         try:
-            agents_response = requests.get("http://localhost:8000/api/agents", timeout=5)
+            agents_response = api.get("/api/agents", timeout=5)
             if agents_response.status_code == 200:
                 agents = agents_response.json()
             else:
@@ -126,10 +126,9 @@ def show_voting():
         
         if st.button("⚠️ Escalate Decision", use_container_width=True):
             try:
-                escalate_response = requests.put(
-                    f"http://localhost:8000/api/decisions/{selected_decision['id']}/status",
-                    json={"status": "escalated"},
-                    timeout=5
+                escalate_response = api.put(
+                    f"/api/decisions/{selected_decision['id']}/status",
+                    json={"status": "escalated"}
                 )
                 if escalate_response.status_code == 200:
                     st.success("Decision escalated successfully")
@@ -275,10 +274,9 @@ def show_voting():
                             "justification": vote_justification
                         }
                         
-                        vote_response = requests.post(
-                            "http://localhost:8000/api/votes",
-                            json=vote_data,
-                            timeout=5
+                        vote_response = api.post(
+                            "/api/votes",
+                            json=vote_data
                         )
                         
                         if vote_response.status_code == 200:
