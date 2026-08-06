@@ -1,5 +1,7 @@
 import streamlit as st
 import time
+import threading
+import asyncio
 from datetime import datetime
 
 # Page configuration — must be the very first Streamlit call
@@ -10,16 +12,57 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Auth gate — import before anything that renders UI
-from frontend.auth import is_authenticated, show_login_page, render_user_info, get_auth_headers, is_admin
+# ──────────────────────────────────────────
+# Start FastAPI backend in a background thread (once, cached for the process)
+# ──────────────────────────────────────────
+
+@st.cache_resource
+def start_fastapi_server():
+    """Start the FastAPI/uvicorn server on port 8000 in a daemon thread."""
+    import uvicorn
+
+    def _run():
+        config = uvicorn.Config(
+            "backend.app:app",
+            host="0.0.0.0",
+            port=8000,
+            log_level="warning",
+            access_log=False,
+        )
+        server = uvicorn.Server(config)
+        asyncio.run(server.serve())
+
+    t = threading.Thread(target=_run, daemon=True)
+    t.start()
+
+    # Wait up to 10 s for the server to be ready
+    import requests as _req
+    for _ in range(20):
+        time.sleep(0.5)
+        try:
+            if _req.get("http://localhost:8000/health", timeout=1).status_code == 200:
+                return True
+        except Exception:
+            pass
+    return False
+
+# Kick off the backend before rendering anything
+start_fastapi_server()
+
+# ──────────────────────────────────────────
+# Auth gate
+# ──────────────────────────────────────────
+from frontend.auth import is_authenticated, show_login_page, render_user_info
 
 if not is_authenticated():
     show_login_page()
     st.stop()
 
-# --- Now we know the user is authenticated ---
-
+# ──────────────────────────────────────────
+# Authenticated UI
+# ──────────────────────────────────────────
 from frontend import dashboard, voting, influence_graph, bias_scanner, governance, audit_log, notifications
+import frontend.api_client as api
 
 # Custom CSS
 st.markdown("""
@@ -60,36 +103,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ──────────────────────────────────────────
-# Backend init (embedded)
-# ──────────────────────────────────────────
-
-@st.cache_resource
-def init_backend_components():
-    try:
-        from backend.data_store import DataStore
-        from backend.ml_bias_detector import MLBiasDetector
-        from backend.ai_integration import AIIntegration
-
-        data_store = DataStore()
-        data_store.initialize_sample_data()
-        ml_bias_detector = MLBiasDetector()
-        ai_integration = AIIntegration()
-
-        return {
-            'data_store': data_store,
-            'ml_bias_detector': ml_bias_detector,
-            'ai_integration': ai_integration,
-            'status': 'connected',
-        }
-    except Exception as e:
-        return {'status': 'disconnected', 'error': str(e)}
-
-
 def check_api_connection() -> bool:
-    import requests
     try:
-        r = requests.get("http://localhost:8000/health", timeout=3)
+        r = api.get("/health")
         return r.status_code == 200
     except Exception:
         return False
@@ -102,17 +118,12 @@ def check_api_connection() -> bool:
 st.sidebar.title("🤖 ParallaxAI")
 st.sidebar.markdown("---")
 
-# User info + logout
 render_user_info()
 st.sidebar.markdown("---")
 
-# API status
 api_ok = check_api_connection()
-st.sidebar.markdown(
-    f"**API:** {'🟢 Online' if api_ok else '🔴 Offline'}"
-)
+st.sidebar.markdown(f"**API:** {'🟢 Online' if api_ok else '🔴 Offline'}")
 
-# Navigation
 pages = {
     "📊 Dashboard":          "dashboard",
     "🗳️ Multi-Agent Voting": "voting",
@@ -128,13 +139,11 @@ page_key = pages[selected_page]
 
 st.sidebar.markdown("---")
 
-# Real-time refresh toggle
 real_time = st.sidebar.checkbox("Real-time Updates", value=True)
-
 if real_time:
     st.sidebar.success("🔄 Live updates enabled")
     refresh_interval = st.sidebar.slider("Refresh (seconds)", 5, 30, 10)
-    if 'last_refresh' not in st.session_state:
+    if "last_refresh" not in st.session_state:
         st.session_state.last_refresh = time.time()
     if time.time() - st.session_state.last_refresh > refresh_interval:
         st.session_state.last_refresh = time.time()
@@ -147,15 +156,13 @@ st.sidebar.markdown("**System Info**")
 st.sidebar.text(f"Updated: {datetime.now().strftime('%H:%M:%S')}")
 
 # ──────────────────────────────────────────
-# Main content area
+# Main content
 # ──────────────────────────────────────────
 
 if not api_ok:
-    st.error("⚠️ Backend API is not responding. Please wait or restart the application.")
-    st.info("The FastAPI backend should be running on port 8000.")
+    st.warning("⏳ Backend API is starting up — please wait a moment and refresh.")
     st.stop()
 
-# Route to the selected page
 if page_key == "dashboard":
     dashboard.show_dashboard()
 elif page_key == "voting":
