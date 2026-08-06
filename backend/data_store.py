@@ -34,7 +34,7 @@ class DataStore:
                 'id': 'ai_claude',
                 'name': 'Claude-4',
                 'type': 'ai',
-                'model_version': 'claude-sonnet-4-20250514',
+                'model_version': 'claude-sonnet-4-5',
                 'role': 'Secondary AI Reviewer',
                 'influence_weight': 1.1,
                 'vote_count': 140,

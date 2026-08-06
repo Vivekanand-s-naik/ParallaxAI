@@ -34,7 +34,17 @@ class MLBiasDetector:
             if os.path.exists(f"{self.model_path}bias_classifier.pkl"):
                 self.bias_classifier = joblib.load(f"{self.model_path}bias_classifier.pkl")
                 self.scaler = joblib.load(f"{self.model_path}scaler.pkl")
+                if os.path.exists(f"{self.model_path}label_encoders.pkl"):
+                    self.label_encoders = joblib.load(f"{self.model_path}label_encoders.pkl")
                 self.is_trained = True
+                # The anomaly detector is not persisted; train it on synthetic data
+                # using the loaded scaler so predict_proba/decision_function work.
+                self.anomaly_detector = IsolationForest(contamination=0.1, random_state=42)
+                synthetic_data = self._generate_synthetic_training_data()
+                if synthetic_data:
+                    X, _ = self._prepare_training_data(synthetic_data)
+                    X_scaled = self.scaler.transform(X)
+                    self.anomaly_detector.fit(X_scaled)
                 print("Loaded pre-trained bias detection models")
             else:
                 self._train_initial_models()
