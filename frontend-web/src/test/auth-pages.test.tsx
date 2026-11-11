@@ -6,6 +6,7 @@ import { createAppQueryClient } from '@/app/query-client';
 import { appRoutes } from '@/app/router';
 import { ApiError } from '@/services/api-error';
 import { authService } from '@/services/auth-service';
+import { systemService } from '@/services/system-service';
 import { useAuthStore } from '@/stores/auth-store';
 import { useUiStore } from '@/stores/ui-store';
 import type { UserAuth } from '@/types/auth';
@@ -62,6 +63,12 @@ describe('Phase 7 — Authentication Screens (Login, Register, Forgot Password)'
       password_reset_message:
         'Outbound email provider (SMTP) is not configured. Password reset tokens are generated in the database.',
     });
+    vi.spyOn(systemService, 'getCommandCenterStats').mockReturnValue(
+      new Promise(() => {})
+    );
+    vi.spyOn(systemService, 'getSystemHealth').mockReturnValue(
+      new Promise(() => {})
+    );
   });
 
   it('validates login fields, toggles password visibility, shows honest disabled Google OAuth state, and logs in', async () => {

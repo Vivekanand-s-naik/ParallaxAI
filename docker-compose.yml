@@ -32,9 +32,42 @@ services:
       timeout: 5s
       retries: 10
 
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: parallaxai-backend
+    restart: unless-stopped
+    profiles: ["full"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-parallaxai}:${POSTGRES_PASSWORD:-parallaxai_dev_pass}@postgres:5432/${POSTGRES_DB:-parallaxai_db}
+      REDIS_URL: redis://redis:6379/0
+      APP_ENV: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend-web:
+    build:
+      context: ./frontend-web
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:8000/api/v1
+        VITE_WS_URL: ws://localhost:8000/ws
+    container_name: parallaxai-frontend-web
+    restart: unless-stopped
+    profiles: ["full"]
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
 volumes:
   parallaxai_pgdata:
     name: parallaxai_pgdata
   parallaxai_redisdata:
     name: parallaxai_redisdata
-

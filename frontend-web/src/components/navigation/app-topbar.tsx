@@ -406,8 +406,8 @@ export function AppTopbar({
           <DialogHeader>
             <DialogTitle>Command Center Navigation & Search</DialogTitle>
             <DialogDescription>
-              Jump to an authorized governance module. Full record search across
-              decisions and audit logs connects in Phase 9.
+              Filter and jump to any authorized governance module across the
+              ParallaxAI Command Center.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">

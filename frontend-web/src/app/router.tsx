@@ -7,18 +7,16 @@ import { ForgotPasswordPage } from '@/features/auth/forgot-password-page';
 import { CommandCenterPage } from '@/features/dashboard/command-center-page';
 import { DecisionsListPage } from '@/features/decisions/decisions-list-page';
 import { DecisionWorkspacePage } from '@/features/decisions/decision-workspace-page';
-import {
-  AgentDetailPlaceholderPage,
-  AgentRegistryPlaceholderPage,
-  AuditExplainabilityPlaceholderPage,
-  BiasScannerPlaceholderPage,
-  GovernanceConsolePlaceholderPage,
-  InfluenceGraphPlaceholderPage,
-  NotificationsPlaceholderPage,
-  SettingsPlaceholderPage,
-  UsersAndRolesPlaceholderPage,
-  VotingMatrixPlaceholderPage,
-} from '@/features/common/feature-placeholders';
+import { AgentRegistryPage } from '@/features/agents/agent-registry-page';
+import { AgentDetailPage } from '@/features/agents/agent-detail-page';
+import { MultiAgentVotingPage } from '@/features/voting/multi-agent-voting-page';
+import { InfluenceGraphPage } from '@/features/influence/influence-graph-page';
+import { BiasScannerPage } from '@/features/bias/bias-scanner-page';
+import { GovernanceConsolePage } from '@/features/governance/governance-console-page';
+import { AuditExplainabilityPage } from '@/features/audit/audit-explainability-page';
+import { NotificationsPage } from '@/features/notifications/notifications-page';
+import { UsersAndRolesPage } from '@/features/administration/users-roles-page';
+import { SystemSettingsPage } from '@/features/administration/system-settings-page';
 import {
   NotFoundPage,
   UnauthorizedPage,
@@ -81,7 +79,7 @@ export const appRoutes: RouteObject[] = [
         path: 'agents',
         element: (
           <ProtectedRoute requiredPermissions={['agents:read']}>
-            <AgentRegistryPlaceholderPage />
+            <AgentRegistryPage />
           </ProtectedRoute>
         ),
       },
@@ -89,7 +87,7 @@ export const appRoutes: RouteObject[] = [
         path: 'agents/:agentId',
         element: (
           <ProtectedRoute requiredPermissions={['agents:read']}>
-            <AgentDetailPlaceholderPage />
+            <AgentDetailPage />
           </ProtectedRoute>
         ),
       },
@@ -97,7 +95,7 @@ export const appRoutes: RouteObject[] = [
         path: 'voting',
         element: (
           <ProtectedRoute requiredPermissions={['voting:read']}>
-            <VotingMatrixPlaceholderPage />
+            <MultiAgentVotingPage />
           </ProtectedRoute>
         ),
       },
@@ -105,7 +103,7 @@ export const appRoutes: RouteObject[] = [
         path: 'influence',
         element: (
           <ProtectedRoute requiredPermissions={['agents:read']}>
-            <InfluenceGraphPlaceholderPage />
+            <InfluenceGraphPage />
           </ProtectedRoute>
         ),
       },
@@ -113,7 +111,7 @@ export const appRoutes: RouteObject[] = [
         path: 'bias',
         element: (
           <ProtectedRoute requiredPermissions={['bias:read']}>
-            <BiasScannerPlaceholderPage />
+            <BiasScannerPage />
           </ProtectedRoute>
         ),
       },
@@ -121,7 +119,7 @@ export const appRoutes: RouteObject[] = [
         path: 'governance',
         element: (
           <ProtectedRoute requiredPermissions={['governance:read']}>
-            <GovernanceConsolePlaceholderPage />
+            <GovernanceConsolePage />
           </ProtectedRoute>
         ),
       },
@@ -129,7 +127,7 @@ export const appRoutes: RouteObject[] = [
         path: 'audit',
         element: (
           <ProtectedRoute requiredPermissions={['audit:read']}>
-            <AuditExplainabilityPlaceholderPage />
+            <AuditExplainabilityPage />
           </ProtectedRoute>
         ),
       },
@@ -137,7 +135,7 @@ export const appRoutes: RouteObject[] = [
         path: 'notifications',
         element: (
           <ProtectedRoute requiredPermissions={['notifications:read']}>
-            <NotificationsPlaceholderPage />
+            <NotificationsPage />
           </ProtectedRoute>
         ),
       },
@@ -145,7 +143,7 @@ export const appRoutes: RouteObject[] = [
         path: 'users',
         element: (
           <ProtectedRoute requiredPermissions={['users:read', 'roles:manage']}>
-            <UsersAndRolesPlaceholderPage />
+            <UsersAndRolesPage />
           </ProtectedRoute>
         ),
       },
@@ -153,7 +151,7 @@ export const appRoutes: RouteObject[] = [
         path: 'roles',
         element: (
           <ProtectedRoute requiredPermissions={['roles:manage']}>
-            <UsersAndRolesPlaceholderPage />
+            <UsersAndRolesPage />
           </ProtectedRoute>
         ),
       },
@@ -161,7 +159,7 @@ export const appRoutes: RouteObject[] = [
         path: 'settings',
         element: (
           <ProtectedRoute requiredPermissions={['system:configure']}>
-            <SettingsPlaceholderPage />
+            <SystemSettingsPage />
           </ProtectedRoute>
         ),
       },
@@ -176,4 +174,3 @@ export const appRoutes: RouteObject[] = [
     element: <NotFoundPage />,
   },
 ];
-

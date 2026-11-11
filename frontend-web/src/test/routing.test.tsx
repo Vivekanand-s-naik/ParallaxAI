@@ -1,8 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, useRoutes } from 'react-router-dom';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppProviders } from '@/app/providers';
 import { appRoutes } from '@/app/router';
+import { authService } from '@/services/auth-service';
+import { decisionsService } from '@/services/decisions-service';
 import { useAuthStore } from '@/stores/auth-store';
 import type { UserAuth } from '@/types/auth';
 
@@ -36,8 +38,19 @@ const VIEWER_USER: UserAuth = {
 
 describe('Application Routing & Permission Guards', () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     useAuthStore.getState().clearSession();
     useAuthStore.getState().setInitialized(true);
+    vi.spyOn(authService, 'getProvidersStatus').mockResolvedValue({
+      local_enabled: true,
+      google_oauth_enabled: false,
+      google_oauth_message: 'Not configured',
+      password_reset_email_enabled: false,
+      password_reset_message: 'Not configured',
+    });
+    vi.spyOn(decisionsService, 'getDecisionWorkspace').mockReturnValue(
+      new Promise(() => {})
+    );
   });
 
   it('redirects unauthenticated users from protected routes to /login', () => {

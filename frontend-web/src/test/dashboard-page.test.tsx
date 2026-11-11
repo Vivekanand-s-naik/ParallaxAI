@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppProviders } from '@/app/providers';
 import { createAppQueryClient } from '@/app/query-client';
 import { appRoutes } from '@/app/router';
+import { decisionsService } from '@/services/decisions-service';
 import { systemService } from '@/services/system-service';
 import { useAuthStore } from '@/stores/auth-store';
 import type { UserAuth } from '@/types/auth';
@@ -234,6 +235,9 @@ describe('Phase 8 — Command Center Dashboard', () => {
       MOCK_STATS
     );
     vi.spyOn(systemService, 'getSystemHealth').mockResolvedValue(MOCK_HEALTH);
+    vi.spyOn(decisionsService, 'getDecisionWorkspace').mockReturnValue(
+      new Promise(() => {})
+    );
   });
 
   it('renders all 6 KPI cards, Recharts sections, Governance Health, System Status, Activity Feed, and navigates from Recent Decisions', async () => {
@@ -281,3 +285,4 @@ describe('Phase 8 — Command Center Dashboard', () => {
     });
   });
 });
+

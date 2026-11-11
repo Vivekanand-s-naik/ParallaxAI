@@ -791,16 +791,31 @@ def compute_influence_graph(session: Session) -> Dict[str, Any]:
                     )
 
     stats = compute_platform_stats(session)
+    avg_agreement = (
+        round(
+            sum(item["agreement_rate"] for item in agreement_matrix)
+            / len(agreement_matrix),
+            3,
+        )
+        if agreement_matrix
+        else 0.85
+    )
+    top_agent = (
+        max(agents, key=lambda a: a.influence_weight).name if agents else None
+    )
     return {
         "nodes": nodes,
         "edges": edges,
         "agreement_pairs": agreement_matrix,
         "metrics": {
             "total_agents": stats["total_agents"],
+            "active_agents": stats["active_agents"],
             "ai_agents": stats["ai_agents"],
             "human_agents": stats["human_agents"],
             "high_influence_agents": stats["high_influence_agents"],
             "consensus_rate": stats["consensus_rate"],
+            "average_agreement_rate": avg_agreement,
+            "highest_influence_agent": top_agent,
             "override_events": stats["override_events"],
             "network_density": stats["network_density"],
         },
