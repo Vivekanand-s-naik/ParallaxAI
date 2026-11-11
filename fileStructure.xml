@@ -1,0 +1,172 @@
+<svg width="1000" height="1100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: 'Arial', sans-serif; font-size: 18px; font-weight: bold; fill: #2c3e50; }
+      .subtitle { font-family: 'Arial', sans-serif; font-size: 12px; fill: #7f8c8d; }
+      .folder-text { font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; fill: #27ae60; font-weight: bold; }
+      .file-text { font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; fill: #3498db; }
+      .icon { font-family: 'Arial', sans-serif; font-size: 16px; }
+      .line { stroke: #bdc3c7; stroke-width: 1.5; }
+      .background { fill: #f8f9fa; }
+      .header-bg { fill: #ecf0f1; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="1100" class="background"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1000" height="60" class="header-bg"/>
+  <text x="20" y="25" class="title">📁 File Tree: ParallaxAI</text>
+  <text x="20" y="45" class="subtitle">Generated: 11/11/2026, 5:57:31 PM | FileTree Pro Extension</text>
+
+  <!-- Tree Structure -->
+    <line x1="15" y1="80" x2="25" y2="80" class="line"/>
+    <text x="30" y="85" class="icon">📁</text>
+    <text x="55" y="85" class="folder-text">.agents/</text>
+    <line x1="45" y1="100" x2="45" y2="110" class="line"/>
+    <line x1="45" y1="110" x2="55" y2="110" class="line"/>
+    <text x="60" y="115" class="icon">📁</text>
+    <text x="85" y="115" class="folder-text">memory/</text>
+    <line x1="75" y1="130" x2="75" y2="140" class="line"/>
+    <line x1="75" y1="140" x2="85" y2="140" class="line"/>
+    <text x="90" y="145" class="icon">📝</text>
+    <text x="115" y="145" class="file-text">MEMORY.md</text>
+    <line x1="75" y1="165" x2="75" y2="175" class="line"/>
+    <line x1="75" y1="175" x2="85" y2="175" class="line"/>
+    <text x="90" y="180" class="icon">📝</text>
+    <text x="115" y="180" class="file-text">parallaxai-auth.md</text>
+    <line x1="75" y1="200" x2="75" y2="210" class="line"/>
+    <line x1="75" y1="210" x2="85" y2="210" class="line"/>
+    <text x="90" y="215" class="icon">📝</text>
+    <text x="115" y="215" class="file-text">parallaxai-ports.md</text>
+    <line x1="15" y1="315" x2="25" y2="315" class="line"/>
+    <text x="30" y="320" class="icon">📁</text>
+    <text x="55" y="320" class="folder-text">.streamlit/</text>
+    <line x1="45" y1="335" x2="45" y2="345" class="line"/>
+    <line x1="45" y1="345" x2="55" y2="345" class="line"/>
+    <text x="60" y="350" class="icon">⚙️</text>
+    <text x="85" y="350" class="file-text">config.toml</text>
+    <line x1="15" y1="415" x2="25" y2="415" class="line"/>
+    <text x="30" y="420" class="icon">📁</text>
+    <text x="55" y="420" class="folder-text">attached_assets/</text>
+    <line x1="45" y1="435" x2="45" y2="445" class="line"/>
+    <line x1="45" y1="445" x2="55" y2="445" class="line"/>
+    <text x="60" y="450" class="icon">📄</text>
+    <text x="85" y="450" class="file-text">Pasted-Based-on-your-ParallaxAI-application-here-s-a-comprehensive-prompt-you-can-use-to-recreate-this-Hum-1751089223299_1751089223299.txt</text>
+    <line x1="15" y1="515" x2="25" y2="515" class="line"/>
+    <text x="30" y="520" class="icon">📁</text>
+    <text x="55" y="520" class="folder-text">backend/</text>
+    <line x1="45" y1="535" x2="45" y2="545" class="line"/>
+    <line x1="45" y1="545" x2="55" y2="545" class="line"/>
+    <text x="60" y="550" class="icon">🐍</text>
+    <text x="85" y="550" class="file-text">__init__.py</text>
+    <line x1="45" y1="570" x2="45" y2="580" class="line"/>
+    <line x1="45" y1="580" x2="55" y2="580" class="line"/>
+    <text x="60" y="585" class="icon">🐍</text>
+    <text x="85" y="585" class="file-text">ai_integration.py</text>
+    <line x1="45" y1="605" x2="45" y2="615" class="line"/>
+    <line x1="45" y1="615" x2="55" y2="615" class="line"/>
+    <text x="60" y="620" class="icon">🐍</text>
+    <text x="85" y="620" class="file-text">app.py</text>
+    <line x1="45" y1="640" x2="45" y2="650" class="line"/>
+    <line x1="45" y1="650" x2="55" y2="650" class="line"/>
+    <text x="60" y="655" class="icon">🐍</text>
+    <text x="85" y="655" class="file-text">auth.py</text>
+    <line x1="45" y1="675" x2="45" y2="685" class="line"/>
+    <line x1="45" y1="685" x2="55" y2="685" class="line"/>
+    <text x="60" y="690" class="icon">🐍</text>
+    <text x="85" y="690" class="file-text">data_store.py</text>
+    <line x1="45" y1="710" x2="45" y2="720" class="line"/>
+    <line x1="45" y1="720" x2="55" y2="720" class="line"/>
+    <text x="60" y="725" class="icon">🐍</text>
+    <text x="85" y="725" class="file-text">ml_bias_detector.py</text>
+    <line x1="45" y1="745" x2="45" y2="755" class="line"/>
+    <line x1="45" y1="755" x2="55" y2="755" class="line"/>
+    <text x="60" y="760" class="icon">🐍</text>
+    <text x="85" y="760" class="file-text">models.py</text>
+    <line x1="45" y1="780" x2="45" y2="790" class="line"/>
+    <line x1="45" y1="790" x2="55" y2="790" class="line"/>
+    <text x="60" y="795" class="icon">🐍</text>
+    <text x="85" y="795" class="file-text">websocket_manager.py</text>
+    <line x1="15" y1="860" x2="25" y2="860" class="line"/>
+    <text x="30" y="865" class="icon">📁</text>
+    <text x="55" y="865" class="folder-text">frontend/</text>
+    <line x1="45" y1="880" x2="45" y2="890" class="line"/>
+    <line x1="45" y1="890" x2="55" y2="890" class="line"/>
+    <text x="60" y="895" class="icon">🐍</text>
+    <text x="85" y="895" class="file-text">__init__.py</text>
+    <line x1="45" y1="915" x2="45" y2="925" class="line"/>
+    <line x1="45" y1="925" x2="55" y2="925" class="line"/>
+    <text x="60" y="930" class="icon">🐍</text>
+    <text x="85" y="930" class="file-text">api_client.py</text>
+    <line x1="45" y1="950" x2="45" y2="960" class="line"/>
+    <line x1="45" y1="960" x2="55" y2="960" class="line"/>
+    <text x="60" y="965" class="icon">🐍</text>
+    <text x="85" y="965" class="file-text">audit_log.py</text>
+    <line x1="45" y1="985" x2="45" y2="995" class="line"/>
+    <line x1="45" y1="995" x2="55" y2="995" class="line"/>
+    <text x="60" y="1000" class="icon">🐍</text>
+    <text x="85" y="1000" class="file-text">auth.py</text>
+    <line x1="45" y1="1020" x2="45" y2="1030" class="line"/>
+    <line x1="45" y1="1030" x2="55" y2="1030" class="line"/>
+    <text x="60" y="1035" class="icon">🐍</text>
+    <text x="85" y="1035" class="file-text">bias_scanner.py</text>
+    <line x1="45" y1="1055" x2="45" y2="1065" class="line"/>
+    <line x1="45" y1="1065" x2="55" y2="1065" class="line"/>
+    <text x="60" y="1070" class="icon">🐍</text>
+    <text x="85" y="1070" class="file-text">dashboard.py</text>
+    <line x1="45" y1="1090" x2="45" y2="1100" class="line"/>
+    <line x1="45" y1="1100" x2="55" y2="1100" class="line"/>
+    <text x="60" y="1105" class="icon">🐍</text>
+    <text x="85" y="1105" class="file-text">governance.py</text>
+    <line x1="45" y1="1125" x2="45" y2="1135" class="line"/>
+    <line x1="45" y1="1135" x2="55" y2="1135" class="line"/>
+    <text x="60" y="1140" class="icon">🐍</text>
+    <text x="85" y="1140" class="file-text">influence_graph.py</text>
+    <line x1="45" y1="1160" x2="45" y2="1170" class="line"/>
+    <line x1="45" y1="1170" x2="55" y2="1170" class="line"/>
+    <text x="60" y="1175" class="icon">🐍</text>
+    <text x="85" y="1175" class="file-text">notifications.py</text>
+    <line x1="45" y1="1195" x2="45" y2="1205" class="line"/>
+    <line x1="45" y1="1205" x2="55" y2="1205" class="line"/>
+    <text x="60" y="1210" class="icon">🐍</text>
+    <text x="85" y="1210" class="file-text">voting.py</text>
+    <line x1="45" y1="1230" x2="45" y2="1240" class="line"/>
+    <line x1="45" y1="1240" x2="55" y2="1240" class="line"/>
+    <text x="60" y="1245" class="icon">🐍</text>
+    <text x="85" y="1245" class="file-text">websocket_client.py</text>
+    <line x1="15" y1="1310" x2="25" y2="1310" class="line"/>
+    <text x="30" y="1315" class="icon">📁</text>
+    <text x="55" y="1315" class="folder-text">ml_models/</text>
+    <line x1="45" y1="1330" x2="45" y2="1340" class="line"/>
+    <line x1="45" y1="1340" x2="55" y2="1340" class="line"/>
+    <text x="60" y="1345" class="icon">📄</text>
+    <text x="85" y="1345" class="file-text">bias_classifier.pkl</text>
+    <line x1="45" y1="1365" x2="45" y2="1375" class="line"/>
+    <line x1="45" y1="1375" x2="55" y2="1375" class="line"/>
+    <text x="60" y="1380" class="icon">📄</text>
+    <text x="85" y="1380" class="file-text">label_encoders.pkl</text>
+    <line x1="45" y1="1400" x2="45" y2="1410" class="line"/>
+    <line x1="45" y1="1410" x2="55" y2="1410" class="line"/>
+    <text x="60" y="1415" class="icon">📄</text>
+    <text x="85" y="1415" class="file-text">scaler.pkl</text>
+    <line x1="15" y1="1480" x2="25" y2="1480" class="line"/>
+    <text x="30" y="1485" class="icon">⚙️</text>
+    <text x="55" y="1485" class="file-text">.replit</text>
+    <line x1="15" y1="1515" x2="25" y2="1515" class="line"/>
+    <text x="30" y="1520" class="icon">🐍</text>
+    <text x="55" y="1520" class="file-text">main.py</text>
+    <line x1="15" y1="1550" x2="25" y2="1550" class="line"/>
+    <text x="30" y="1555" class="icon">⚙️</text>
+    <text x="55" y="1555" class="file-text">pyproject.toml</text>
+    <line x1="15" y1="1585" x2="25" y2="1585" class="line"/>
+    <text x="30" y="1590" class="icon">📝</text>
+    <text x="55" y="1590" class="file-text">replit.md</text>
+    <line x1="15" y1="1620" x2="25" y2="1620" class="line"/>
+    <text x="30" y="1625" class="icon">🐍</text>
+    <text x="55" y="1625" class="file-text">start_app.py</text>
+    <line x1="15" y1="1655" x2="25" y2="1655" class="line"/>
+    <text x="30" y="1660" class="icon">📄</text>
+    <text x="55" y="1660" class="file-text">uv.lock</text>
+</svg>
