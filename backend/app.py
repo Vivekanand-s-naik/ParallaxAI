@@ -17,8 +17,12 @@ from backend.auth import (
     authenticate_user, create_token, get_current_user,
     require_admin, optional_auth, USERS
 )
+from backend.api.v1.auth import router as auth_v1_router
+from backend.database.session import get_db
+from backend.services.auth_service import authenticate_user_db, issue_token_pair
+from sqlalchemy.orm import Session
 
-app = FastAPI(title="ParallaxAI API", version="1.0.0")
+app = FastAPI(title="ParallaxAI API", version="2.0.0")
 
 # CORS middleware
 app.add_middleware(
@@ -28,6 +32,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount v1 routers
+app.include_router(auth_v1_router)
 
 # Initialize components
 websocket_manager = WebSocketManager()
@@ -48,49 +55,63 @@ async def health_check():
 
 
 # ───────────────────────────────────────────
-# Auth endpoints
+# Legacy Auth endpoints (compatibility aliases backed by PostgreSQL)
 # ───────────────────────────────────────────
 
 @app.post("/api/auth/login")
-async def login(credentials: dict):
-    """Authenticate and return a signed token."""
-    username = credentials.get("username", "")
+async def login(credentials: dict, session: Session = Depends(get_db)):
+    """Authenticate against PostgreSQL and return a signed JWT token."""
+    identifier = credentials.get("email") or credentials.get("username", "")
     password = credentials.get("password", "")
 
-    user = authenticate_user(username, password)
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-
-    token = create_token(username, user["role"])
+    user_orm = authenticate_user_db(session, identifier, password)
+    access_token, raw_refresh, _ = issue_token_pair(session, user=user_orm)
+    legacy_role = (
+        user_orm.primary_role.lower()
+        if user_orm.primary_role in ("ADMIN", "ANALYST")
+        else ("admin" if user_orm.primary_role == "SUPER_ADMIN" else "reviewer")
+    )
     return {
-        "token": token,
+        "token": access_token,
+        "access_token": access_token,
+        "refresh_token": raw_refresh,
         "user": {
-            "username": user["username"],
-            "role": user["role"],
-            "full_name": user["full_name"],
-            "email": user["email"],
+            "id": str(user_orm.id),
+            "username": user_orm.username or user_orm.email,
+            "role": legacy_role,
+            "primary_role": user_orm.primary_role,
+            "roles": user_orm.role_names,
+            "full_name": user_orm.full_name,
+            "email": user_orm.email,
         },
     }
 
 
 @app.get("/api/auth/me")
 async def get_me(current_user: dict = Depends(get_current_user)):
-    """Return info about the currently authenticated user."""
-    username = current_user.get("sub")
-    user = USERS.get(username, {})
+    """Return info about the currently authenticated user from PostgreSQL."""
     return {
-        "username": username,
+        "id": current_user.get("id"),
+        "username": current_user.get("username"),
         "role": current_user.get("role"),
-        "full_name": user.get("full_name", username),
-        "email": user.get("email", ""),
+        "primary_role": current_user.get("primary_role"),
+        "roles": current_user.get("roles", []),
+        "permissions": current_user.get("permissions", []),
+        "full_name": current_user.get("full_name"),
+        "email": current_user.get("email"),
     }
 
 
 @app.post("/api/auth/refresh")
 async def refresh_token(current_user: dict = Depends(get_current_user)):
-    """Issue a fresh token for an already-authenticated user."""
-    token = create_token(current_user["sub"], current_user["role"])
-    return {"token": token}
+    """Issue a fresh JWT access token for an already-authenticated user."""
+    token = create_token(
+        username=current_user["username"],
+        role=current_user["primary_role"],
+        user_id=current_user["id"],
+        email=current_user["email"],
+    )
+    return {"token": token, "access_token": token}
 
 
 # ───────────────────────────────────────────
