@@ -1,19 +1,17 @@
 import { Navigate, type RouteObject } from 'react-router-dom';
 import { AppShellLayout } from '@/layouts/app-shell-layout';
 import { ProtectedRoute } from '@/components/navigation/protected-route';
-import {
-  ForgotPasswordPagePlaceholder,
-  LoginPagePlaceholder,
-  RegisterPagePlaceholder,
-} from '@/features/auth/auth-placeholders';
+import { LoginPage } from '@/features/auth/login-page';
+import { RegisterPage } from '@/features/auth/register-page';
+import { ForgotPasswordPage } from '@/features/auth/forgot-password-page';
+import { CommandCenterPage } from '@/features/dashboard/command-center-page';
+import { DecisionsListPage } from '@/features/decisions/decisions-list-page';
+import { DecisionWorkspacePage } from '@/features/decisions/decision-workspace-page';
 import {
   AgentDetailPlaceholderPage,
   AgentRegistryPlaceholderPage,
   AuditExplainabilityPlaceholderPage,
   BiasScannerPlaceholderPage,
-  DashboardPlaceholderPage,
-  DecisionWorkspacePlaceholderPage,
-  DecisionsListPlaceholderPage,
   GovernanceConsolePlaceholderPage,
   InfluenceGraphPlaceholderPage,
   NotificationsPlaceholderPage,
@@ -33,15 +31,15 @@ export const appRoutes: RouteObject[] = [
   },
   {
     path: '/login',
-    element: <LoginPagePlaceholder />,
+    element: <LoginPage />,
   },
   {
     path: '/register',
-    element: <RegisterPagePlaceholder />,
+    element: <RegisterPage />,
   },
   {
     path: '/forgot-password',
-    element: <ForgotPasswordPagePlaceholder />,
+    element: <ForgotPasswordPage />,
   },
   {
     path: '/app',
@@ -59,7 +57,7 @@ export const appRoutes: RouteObject[] = [
         path: 'dashboard',
         element: (
           <ProtectedRoute requiredPermissions={['decisions:read']}>
-            <DashboardPlaceholderPage />
+            <CommandCenterPage />
           </ProtectedRoute>
         ),
       },
@@ -67,7 +65,7 @@ export const appRoutes: RouteObject[] = [
         path: 'decisions',
         element: (
           <ProtectedRoute requiredPermissions={['decisions:read']}>
-            <DecisionsListPlaceholderPage />
+            <DecisionsListPage />
           </ProtectedRoute>
         ),
       },
@@ -75,7 +73,7 @@ export const appRoutes: RouteObject[] = [
         path: 'decisions/:decisionId',
         element: (
           <ProtectedRoute requiredPermissions={['decisions:read']}>
-            <DecisionWorkspacePlaceholderPage />
+            <DecisionWorkspacePage />
           </ProtectedRoute>
         ),
       },

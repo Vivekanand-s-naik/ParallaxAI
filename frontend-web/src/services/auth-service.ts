@@ -59,6 +59,33 @@ export const authService = {
     return data;
   },
 
+  async resetPassword(payload: {
+    token: string;
+    new_password: string;
+    confirm_password?: string;
+  }): Promise<{ message: string }> {
+    const { data } = await apiClient.post<{ message: string }>(
+      '/auth/reset-password',
+      payload
+    );
+    return data;
+  },
+
+  async initiateGoogleOAuth(redirectUri?: string): Promise<{
+    authorization_url: string;
+    state: string;
+    redirect_uri: string;
+  }> {
+    const { data } = await apiClient.get<{
+      authorization_url: string;
+      state: string;
+      redirect_uri: string;
+    }>('/auth/google/login', {
+      params: redirectUri ? { redirect_uri: redirectUri } : undefined,
+    });
+    return data;
+  },
+
   async bootstrapSession(): Promise<boolean> {
     const store = useAuthStore.getState();
     store.setLoading(true);

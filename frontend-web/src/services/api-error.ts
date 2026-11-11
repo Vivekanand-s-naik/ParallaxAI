@@ -93,3 +93,6 @@ export function normalizeApiError(error: unknown): ApiError {
   });
 }
 
+export const toApiError = normalizeApiError;
+
+
