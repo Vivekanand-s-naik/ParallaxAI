@@ -59,3 +59,4 @@ export interface PaginatedDecisionsResponse {
   page_size: number;
   total_pages: number;
 }
+

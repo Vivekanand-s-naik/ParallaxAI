@@ -115,3 +115,4 @@ export function createApiClient(baseURL: string = API_CONFIG.baseUrl): AxiosInst
 }
 
 export const apiClient = createApiClient();
+

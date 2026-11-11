@@ -90,3 +90,4 @@ export const useUiStore = create<UiState>((set) => ({
       toasts: state.toasts.filter((t) => t.id !== id),
     })),
 }));
+

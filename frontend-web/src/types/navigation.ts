@@ -34,3 +34,4 @@ export type WebSocketConnectionState =
   | 'reconnecting'
   | 'disconnected'
   | 'unavailable';
+

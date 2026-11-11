@@ -95,3 +95,4 @@ export interface AuthProvidersStatus {
   password_reset_email_enabled: boolean;
   password_reset_message: string;
 }
+

@@ -101,3 +101,4 @@ export function createAppQueryClient(): QueryClient {
 }
 
 export const queryClient = createAppQueryClient();
+

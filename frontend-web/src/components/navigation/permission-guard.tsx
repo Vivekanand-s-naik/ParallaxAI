@@ -28,3 +28,4 @@ export function PermissionGate({
   if (!allowed) return <>{fallback}</>;
   return <>{children}</>;
 }
+
