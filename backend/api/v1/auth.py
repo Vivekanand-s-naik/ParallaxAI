@@ -44,6 +44,11 @@ from backend.services.auth_service import (
     revoke_session_by_id,
     rotate_refresh_token,
 )
+from backend.services.google_oauth_service import (
+    assert_google_oauth_configured,
+    build_google_authorization_url,
+    verify_and_consume_oauth_state,
+)
 
 REFRESH_COOKIE_NAME = "parallaxai_refresh_token"
 
@@ -105,6 +110,44 @@ async def get_auth_providers_status() -> AuthProvidersStatusOut:
             else "Outbound email provider (SMTP) is not configured. Password reset tokens are generated in the database, or an administrator can reset your credentials."
         ),
     )
+
+
+@router.get("/google/login")
+async def google_oauth_login(redirect_uri: Optional[str] = None):
+    """
+    Initiate Google OAuth 2.0 / OpenID Connect authorization flow.
+    Returns HTTP 503 if GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET are not configured.
+    Never simulates a Google login.
+    """
+    return build_google_authorization_url(redirect_uri=redirect_uri)
+
+
+@router.get("/google/callback")
+async def google_oauth_callback(
+    code: Optional[str] = None,
+    state: Optional[str] = None,
+    error: Optional[str] = None,
+):
+    """
+    Google OAuth 2.0 / OpenID Connect callback endpoint.
+    Validates OAuth state and configuration before proceeding.
+    """
+    assert_google_oauth_configured()
+    if error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Google OAuth authorization error: {error}",
+        )
+    if not state or not code:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing required OAuth code or state parameter",
+        )
+    verified_state = verify_and_consume_oauth_state(state)
+    return {
+        "status": "state_verified",
+        "redirect_uri": verified_state.get("redirect_uri"),
+    }
 
 
 @router.post(

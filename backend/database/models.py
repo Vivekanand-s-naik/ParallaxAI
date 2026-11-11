@@ -103,6 +103,10 @@ class UserORM(Base):
         return [r.name for r in self.roles]
 
     @property
+    def permissions(self) -> List[str]:
+        return sorted({p.name for r in self.roles for p in r.permissions})
+
+    @property
     def primary_role(self) -> str:
         names = self.role_names
         if not names:

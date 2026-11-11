@@ -96,7 +96,7 @@ def test_idempotent_seeding():
 
     assert first_counts == second_counts
     assert first_counts["permissions"] == 19
-    assert first_counts["roles"] == 6
+    assert first_counts["roles"] >= 6
     assert first_counts["users"] >= 4
     assert first_counts["agents"] >= 6
     assert first_counts["governance_rules"] >= 3

@@ -96,6 +96,34 @@ class Settings(BaseSettings):
             and self.GOOGLE_REDIRECT_URI.strip()
         )
 
+    @property
+    def google_oauth_enabled(self) -> bool:
+        return self.is_google_oauth_configured
+
+    @property
+    def email_provider_configured(self) -> bool:
+        return False
+
+    @property
+    def ENVIRONMENT(self) -> str:
+        return self.APP_ENV
+
+    @property
+    def DEFAULT_REGISTRATION_ROLE(self) -> str:
+        return "VIEWER"
+
+    @property
+    def ACCESS_TOKEN_EXPIRE_MINUTES(self) -> int:
+        return self.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+
+    @property
+    def REFRESH_TOKEN_EXPIRE_DAYS(self) -> int:
+        return self.JWT_REFRESH_TOKEN_EXPIRE_DAYS
+
+    @property
+    def RATE_LIMIT_GENERAL_PER_MINUTE(self) -> int:
+        return self.RATE_LIMIT_API_PER_MINUTE
+
 
 @lru_cache
 def get_settings() -> Settings:

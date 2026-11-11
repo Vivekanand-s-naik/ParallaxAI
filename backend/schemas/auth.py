@@ -28,19 +28,22 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: Optional[str] = Field(default=None)
     username: Optional[str] = Field(default=None)
+    identifier_field: Optional[str] = Field(default=None, alias="identifier")
     password: str = Field(..., min_length=1)
     remember_me: bool = Field(default=False)
 
+    model_config = {"populate_by_name": True}
+
     @model_validator(mode="after")
     def check_identifier(self) -> "LoginRequest":
-        identifier = (self.email or self.username or "").strip()
+        identifier = (self.email or self.username or self.identifier_field or "").strip()
         if not identifier:
             raise ValueError("Email or username is required")
         return self
 
     @property
     def identifier(self) -> str:
-        return (self.email or self.username or "").strip()
+        return (self.email or self.username or self.identifier_field or "").strip()
 
 
 class UserAuthOut(BaseModel):
